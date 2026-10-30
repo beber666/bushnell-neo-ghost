@@ -1,0 +1,74 @@
+{
+ "1": {
+  "par": 3,
+  "hcp": 15,
+  "type": "Précision",
+  "jaune": 100,
+  "rouge": 83,
+  "orange": 51
+ },
+ "2": {
+  "par": 3,
+  "hcp": 3,
+  "type": "Placement",
+  "jaune": 101,
+  "rouge": 80,
+  "orange": 50
+ },
+ "3": {
+  "par": 3,
+  "hcp": 11,
+  "type": "Contrôle",
+  "jaune": 103,
+  "rouge": 86,
+  "orange": 66
+ },
+ "4": {
+  "par": 3,
+  "hcp": 7,
+  "type": "Attaque de green",
+  "jaune": 139,
+  "rouge": 93,
+  "orange": 51
+ },
+ "5": {
+  "par": 3,
+  "hcp": 17,
+  "type": "Régularité",
+  "jaune": 79,
+  "rouge": 68,
+  "orange": 68
+ },
+ "6": {
+  "par": 3,
+  "hcp": 13,
+  "type": "Maîtrise",
+  "jaune": 104,
+  "rouge": 83,
+  "orange": 83
+ },
+ "7": {
+  "par": 4,
+  "hcp": 5,
+  "type": "Stratégie",
+  "jaune": 193,
+  "rouge": 128,
+  "orange": 90
+ },
+ "8": {
+  "par": 3,
+  "hcp": 1,
+  "type": "Défi",
+  "jaune": 100,
+  "rouge": 69,
+  "orange": 69
+ },
+ "9": {
+  "par": 4,
+  "hcp": 9,
+  "type": "Final offensif",
+  "jaune": 249,
+  "rouge": 214,
+  "orange": 71
+ }
+}

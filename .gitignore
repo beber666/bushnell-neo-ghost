@@ -1,0 +1,8 @@
+# never commit device data
+*.img
+*.bin
+neo_mount/
+idx/
+name/
+00[0-4]/
+__pycache__/
