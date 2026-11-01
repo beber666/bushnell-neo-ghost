@@ -98,12 +98,29 @@ The whole index is **sorted by longitude**, from Hawaii (`idx/000[0]`, −159.53
 | 0 | int32 lat × 10⁷, int32 lon × 10⁷ (same as the index) |
 | 8 | u16 LE: **copy of `ck`** (29,544/29,544) |
 | 10–59 | **course name as displayed by the Neo**: `name[p] = plain[10+p] XOR KH[p]`. `KH` is a single global 50-byte stream (identical for all `ck` groups over the first 30 chars), NUL-terminated, random padding after the NUL |
-| 60 + 96·k | hole *k* (k = 0…17), 24 × int32: (lat, lon) × 10⁷ pairs for **green front, center, back**, **4 custom points** (hazards), **3 tees**, then 4 × int32 **type codes** of the custom points (not decoded; values like `0xA48FF3FC`, `0xA48FF2FC`, `0xA48FF3E2`) |
+| 60 + 96·k | hole *k* (k = 0…17), 24 × int32: (lat, lon) × 10⁷ pairs for **green front, center, back**, **4 custom points** (hazards), **3 tees**, then 4 × int32 **type codes** of the custom points (partly decoded, see 5.1) |
 | 1788 | u16: number of holes (9 or 18; one course with 5) |
 | 1790 | one byte per hole: **par** |
 
 - Empty point = (2,000,000,000, 0). Unused holes are filled with empty points.
 - Database statistics (800 random courses): every hole has ≥ 1 tee; 20% of holes have only 1–2 tees, always in the first slots. Tees are ordered longest → shortest in 89% of holes (*hypothesis:* back/middle/front). Green front→back depth: median 25 m.
+
+### 5.1 Custom point (hazard) codes: partly decoded
+
+Each of the 4 custom points of a hole has an int32 code. **XOR it with `0xA48FF3AE`** and read the 4 bytes (little-endian) `b0 b1 b2 b3`:
+
+| Byte | Meaning | Evidence |
+|---|---|---|
+| `b0` | **position letter**: `L` left, `R` right, `F` front, `B` back, `C` crossing, `M` (middle?), `E` (unknown) | `R` points lie right of the tee→green line in 93% of 41,853 cases, `L` points left in 93% of 41,222. `B` sits a median 17 m *past* the green center, `F` 20 m short of it, on the axis |
+| `b1` | **0 = greenside, 1 = fairway** (`0x15` with `C`, `0x08` with `E`) | `b1=0`: median 11 m from the green, 97% of the hole length. `b1=1`: about 114 m short of the green, almost never on par 3s (4%) |
+| `b2` | **hazard type: `0x00` = bunker, `0x15` = water** (`0x09` with `C`, `0x04` with `E`) | OpenStreetMap check on 7 courses in southern France, counting points that have a mapped feature within 15 m: bunker codes → bunker polygon 137/146; water codes, `C` included → water 56/57 |
+| `b3` | `0x00` or `0x43` (`'C'`) | *hypothesis*: carry (far edge) vs reach (near edge). Both variants exist for the same crossings, the `0x43` one about 7 m farther from the tee |
+
+- Empty slot: `b0` = 0 (stored low byte `0xAE`), and the upper bytes are random padding.
+- Most frequent codes, raw: `0xA48FF3FC` = greenside bunker right, `0xA48FF3E2` = greenside bunker left, `0xA48FF2FC` / `0xA48FF2E2` = fairway bunker right / left.
+- `C` + (`0x15`, `0x09`) = water crossing the hole, 22/24 on water in the OSM check.
+- `E` (`0x08`, `0x04`): no OSM feature nearby, a median 60 m off the line, once per hole, par 4/5 only. *Hypothesis:* dogleg / turning point.
+- Not yet tested on the device: how the Neo displays each code.
 
 ## 6. Names in `name/` (50 B, encrypted)
 

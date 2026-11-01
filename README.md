@@ -79,7 +79,7 @@ The Neo only lists courses within roughly 15 km. To test at home, forge a tempor
 | Disk | 2048-byte sectors; one partition at byte 18432, 131,086,336 bytes; custom FAT12, OEM name `L1 NEO`; boot byte `0x25` = `0xDC` when clean |
 | `idx/NNN` (29 files × 1024 entries) | 32-byte **plain-text** entries **sorted by longitude**: lat, lon (int32 × 1e7), record offset, key value `ck` (u16), pointers to the data and name files |
 | `000/`–`004/` | 1808-byte course records, XOR with a 33-byte key rotated by `ck` |
-| Record | center; copy of `ck`; **displayed name**; 18 hole blocks (green F/C/B, 4 custom points, 3 tees, hazard codes); hole count; pars |
+| Record | center; copy of `ck`; **displayed name**; 18 hole blocks (green F/C/B, 4 custom points + their hazard codes, 3 tees); hole count; pars |
 | `name/` | 50-byte names, XOR with a per-`ck%33` keystream. The Neo does **not** display this copy |
 | `idx/ghost.idx` | header plus a min/max longitude table per index file. The last 116 bytes are still unknown, but they are **not checked** against the edits described here |
 
@@ -87,7 +87,7 @@ Full spec: [docs/FORMAT.md](docs/FORMAT.md). Keys: [tools/keys.json](tools/keys.
 
 ## Open questions / help wanted
 
-- Hazard type codes (custom points) are not decoded yet.
+- Hazard codes are **partly decoded**: side, greenside or fairway, bunker or water ([docs/FORMAT.md §5.1](docs/FORMAT.md)). Still missing: the `E` type, the 4th byte, and how the Neo displays each code.
 - What `ghost.idx`'s first u32 (`0xEBEAEA58`) and its last 116 bytes are.
 - The `FW.bin` firmware (probably PIC24/dsPIC) has not been disassembled.
 - Is the format the same on the **Neo XS / Neo Ion / Neo+**? Reports welcome (open an issue).
